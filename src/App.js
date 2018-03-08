@@ -65,16 +65,6 @@ const GET_FLIGHTS = gql`
   }
   `;
 
-const MyComponentWithData = graphql(GET_FLIGHTS)(props => 
-    <ul> 
-      {
-        props.data.allFlights.edges.map((edge) => 
-          <li key={edge.id.toString()}>{edge.duration}</li>
-        )
-      }
-    </ul>
-  );
-
 class App extends Component {
 
   constructor(props){
@@ -87,19 +77,9 @@ class App extends Component {
 
 
   render() {
+    const MyComponentWithData = graphql(GET_FLIGHTS)(FlightsTable)
     return (
-      <div>
-      <Query query={GET_FLIGHTS}>
-        {({ loading, error, data }) => {
-          if (loading) return <div>Loading...</div>;
-          if (error) return <div>Error :(</div>;
-          console.log(data.allFlights.edges[0])
-          return (
-            <FlightsTable data={data}/>
-          )
-        }}
-      </Query>
-      </div>
+      <MyComponentWithData />
     );
   }
 }
