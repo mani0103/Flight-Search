@@ -5,6 +5,7 @@ import './App.css';
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
 import { Query } from 'react-apollo';
+import FlightsTable from './Components/FlighsTable'
 
 
 const GET_FLIGHTS = gql`
@@ -64,7 +65,15 @@ const GET_FLIGHTS = gql`
   }
   `;
 
-
+const MyComponentWithData = graphql(GET_FLIGHTS)(props => 
+    <ul> 
+      {
+        props.data.allFlights.edges.map((edge) => 
+          <li key={edge.id.toString()}>{edge.duration}</li>
+        )
+      }
+    </ul>
+  );
 
 class App extends Component {
 
@@ -79,16 +88,18 @@ class App extends Component {
 
   render() {
     return (
+      <div>
       <Query query={GET_FLIGHTS}>
         {({ loading, error, data }) => {
           if (loading) return <div>Loading...</div>;
           if (error) return <div>Error :(</div>;
-          
+          console.log(data.allFlights.edges[0])
           return (
-            <div>{data[0]}</div>
+            <FlightsTable data={data}/>
           )
         }}
       </Query>
+      </div>
     );
   }
 }
