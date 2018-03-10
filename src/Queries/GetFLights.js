@@ -35,13 +35,21 @@ query GET_FLIGHTS( $from: String, $to: String, $date: Date ){
         duration,
         legs {
           id,
-          arrival {
-            time
-            localTime
-          },
           departure {
             time
-            localTime
+            airport{
+              city{
+                name
+              }
+            }
+          },
+          arrival {
+            time,
+            airport{
+              city{
+                name
+              }
+            }
           },
           duration,
           flightNumber,

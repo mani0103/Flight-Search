@@ -7,17 +7,18 @@ import FlightsTable from './Components/FlighsTable'
 import GET_FLIGHTS from './Queries/GetFLights'
 import SearchInput from './Components/SearchInput'
 
+const INIT_STATE = {
+    from: 'PRG',
+    to: 'BCN',
+    date: '2018-03-29'
+  }
 
 class App extends Component {
 
   constructor(props){
     super(props);
     this.handleChange = this.handleChange.bind(this);
-    this.state = {
-      from: '',
-      to: '',
-      date: ''
-    }
+    this.state = { ...INIT_STATE }
   }
 
   componentDidMount(){
