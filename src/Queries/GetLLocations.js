@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
 const GET_LOCATIONS = gql`
-query{
-    allLocations{
+query GET_LOCATIONS( $search: String ) {
+    allLocations(search: $search, first: 10){
       edges{
         node{
           name
