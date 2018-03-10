@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
-import { Modal, OverlayTrigger, FormGroup, ControlLabel, FormControl, HelpBlock, Button } from 'react-bootstrap';
+import { FormGroup, ControlLabel, FormControl, MenuItem  } from 'react-bootstrap';
+import { Typeahead } from 'react-bootstrap-typeahead';
+import Autosuggest from 'react-bootstrap-autosuggest'
+import GET_LOCATIONS from '../Queries/GetLLocations'
+import { graphql } from 'react-apollo';
 
 
 class SearchInput extends Component {
@@ -11,20 +15,20 @@ class SearchInput extends Component {
     render() {
         return(
             <form>
-                <FieldGroup
+                <FormWithSuggestions
                     id="formControlsSrc"
                     type="text"
                     label="From:"
                     placeholder="Enter an airport or city"
-                    onChange={(e) => this.props.handleChange('from', e.target.value)}
+                    onChange={(e) => this.props.handleChange('from', e)}
                     value={this.props.search.from}
                 />
-                <FieldGroup
+                <FormWithSuggestions
                     id="formControlsDst"
                     placeholder="Enter an airport or city"
                     label="To:"
                     type="text"
-                    onChange={(e) => this.props.handleChange('to', e.target.value)}
+                    onChange={(e) => this.props.handleChange('to', e)}
                     value={this.props.search.to}
                 />
                 <FieldGroup
@@ -32,23 +36,53 @@ class SearchInput extends Component {
                     placeholder="YYYY-MM-DD"
                     label="Date:"
                     type="text"
-                    onChange={(e) => this.props.handleChange('date', e.target.value)}
+                    onChange={(e) => this.props.handleChange('date', e)}
                     value={this.props.search.date}
-                />
+                    options = {[]}
+                />              
             </form>
         )
     }
 }
 
-function FieldGroup({ id, label, help, ...props }) {
+function FieldGroup({ id, label, ...props }) {
     return (
-        <FormGroup controlId={id} validationState={props.validationState}>
+        <FormGroup controlId={id}>
             <ControlLabel>{label}</ControlLabel>
-            <FormControl {...props} />
-            <FormControl.Feedback />
-            {help && <HelpBlock>{help}</HelpBlock>}
+            <Autosuggest    
+                datalist={props.options}
+                placeholder={props.placeholder}
+                {...props}
+            />
         </FormGroup>
     );
+}
+
+class FormWithSuggestions extends Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            options: ''
+        }
+    }
+
+    render() {
+        const FormWithData = 
+            graphql(GET_LOCATIONS, {options: {variables: { search: this.props.value }}})( ({data}) => {
+                
+                data.loading || data.error 
+                const options = data.loading || data.error ? [] :data.allLocations.edges.map(
+                        edge =>  edge.node.name    
+                    )
+                //console.log(data.allLocations.edges.map(edge => { name: edge.node.name }));
+                return (
+                    <FieldGroup options={options}  {...this.props} />
+                )
+            });
+        return(
+            <FormWithData />
+        )
+    }
 }
 
 export default SearchInput;

@@ -7,7 +7,7 @@ class FlightsTable extends Component {
       
       if (this.props.data.loading) return <div>Loading...</div>;
       if (this.props.data.error) return <div>Error :(</div>;
-      console.log(this.props.data)
+      //console.log(this.props.data)
       return (
         <Table striped bordered condensed hover responsive>
           <thead>
