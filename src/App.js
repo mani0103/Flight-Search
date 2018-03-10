@@ -5,6 +5,7 @@ import './App.css';
 import { graphql } from 'react-apollo';
 import FlightsTable from './Components/FlighsTable'
 import GET_FLIGHTS from './Queries/GetFLights'
+import GET_LOCATIONS from './Queries/GetLLocations'
 import SearchInput from './Components/SearchInput'
 
 const INIT_STATE = {
@@ -50,9 +51,18 @@ class App extends Component {
           }
       })(FlightsTable)
     )
+    const SearchInputWithData = 
+      graphql(GET_LOCATIONS, {options: {variables: { search: this.props.value }}})( ({data}) => {
+          const options = data.loading || data.error ? [] :data.allLocations.edges.map(
+                  edge =>  edge.node.name    
+              )
+          return (
+            <SearchInput handleChange={this.handleChange} search={this.state} options={options}/>
+          )
+      });
     return (
       <div className='main-container'>
-        <SearchInput handleChange={this.handleChange} search={this.state} />
+        <SearchInputWithData/>
         {isInputValid && <MyComponentWithData />}
       </div>
     );

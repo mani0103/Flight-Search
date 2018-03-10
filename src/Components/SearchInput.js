@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { FormGroup, ControlLabel, FormControl, MenuItem  } from 'react-bootstrap';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import Autosuggest from 'react-bootstrap-autosuggest'
-import GET_LOCATIONS from '../Queries/GetLLocations'
 import { graphql } from 'react-apollo';
 
 
@@ -15,21 +14,23 @@ class SearchInput extends Component {
     render() {
         return(
             <form>
-                <FormWithSuggestions
+                <FieldGroup
                     id="formControlsSrc"
                     type="text"
                     label="From:"
                     placeholder="Enter an airport or city"
                     onChange={(e) => this.props.handleChange('from', e)}
                     value={this.props.search.from}
+                    {...this.props}
                 />
-                <FormWithSuggestions
+                <FieldGroup
                     id="formControlsDst"
                     placeholder="Enter an airport or city"
                     label="To:"
                     type="text"
                     onChange={(e) => this.props.handleChange('to', e)}
                     value={this.props.search.to}
+                    {...this.props}
                 />
                 <FieldGroup
                     id="formControlsDate"
@@ -46,6 +47,7 @@ class SearchInput extends Component {
 }
 
 function FieldGroup({ id, label, ...props }) {
+
     return (
         <FormGroup controlId={id}>
             <ControlLabel>{label}</ControlLabel>
@@ -58,31 +60,6 @@ function FieldGroup({ id, label, ...props }) {
     );
 }
 
-class FormWithSuggestions extends Component{
-    constructor(props){
-        super(props);
-        this.state = {
-            options: ''
-        }
-    }
 
-    render() {
-        const FormWithData = 
-            graphql(GET_LOCATIONS, {options: {variables: { search: this.props.value }}})( ({data}) => {
-                
-                data.loading || data.error 
-                const options = data.loading || data.error ? [] :data.allLocations.edges.map(
-                        edge =>  edge.node.name    
-                    )
-                //console.log(data.allLocations.edges.map(edge => { name: edge.node.name }));
-                return (
-                    <FieldGroup options={options}  {...this.props} />
-                )
-            });
-        return(
-            <FormWithData />
-        )
-    }
-}
 
 export default SearchInput;
