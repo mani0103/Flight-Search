@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import './App.css';
-
 import { graphql } from 'react-apollo';
 import FlightsTable from './Components/FlighsTable'
 import GET_FLIGHTS from './Queries/GetFLights'
@@ -63,10 +62,6 @@ class App extends Component {
                       cursor: allFlights.pageInfo.endCursor
                     },
                     updateQuery: (previousResult, { fetchMoreResult, queryVariables }) => {
-                      //console.log(previousResult)
-                      //console.log(fetchMoreResult.allFlights)
-                      //const prevCursor = previousResult.allFlights.pageInfo.startCursor;
-                      //console.log(prevCursor)
                       return {
                         ...previousResult,
                         allFlights: {

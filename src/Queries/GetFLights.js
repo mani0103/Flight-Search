@@ -10,7 +10,6 @@ query GET_FLIGHTS( $from: String, $to: String, $date: Date , $cursor: String){
       endCursor
     }
     edges {
-      cursor,
       node {
         id,
         airlines {
