@@ -13,12 +13,13 @@ class FlightsTable extends Component {
             <thead>
               <tr>
                 <th>Airlines</th>
-                <th>Departure Time</th>
+                <th>Departure Time (local)</th>
                 <th>Departure Location</th>
-                <th>Arrival Time</th>
+                <th>Arrival Time (local)</th>
                 <th>Arrival Location</th>
                 <th>Price</th>
                 <th>Currency</th>
+                <th>Duration (min)</th>
                 <th>Flights</th>
               </tr>
             </thead>
@@ -33,6 +34,7 @@ class FlightsTable extends Component {
                 <td key="arrival-location">{edge.node.arrival.airport.city.name}: {edge.node.arrival.airport.name}</td>
                 <td key="price">{edge.node.price.amount}</td>
                 <td key="currency">{edge.node.price.currency}</td>
+                <td key="duration">{edge.node.duration}</td>
                 <td key="legs">{edge.node.legs.map(a => `${a.departure.airport.city.name} -> ${a.arrival.airport.city.name}`).join(', ')}</td>
               </tr>
               )

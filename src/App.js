@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import { graphql } from 'react-apollo';
+
 import FlightsTable from './Components/FlighsTable'
 import GET_FLIGHTS from './Queries/GetFLights'
 import SearchInput from './Components/SearchInput'
@@ -8,7 +9,7 @@ import SearchInput from './Components/SearchInput'
 const INIT_STATE = {
     from: 'PRG',
     to: 'BCN',
-    date: '2018-03-29'
+    date: '2018-03-16'
   }
 
 class App extends Component {
@@ -17,10 +18,6 @@ class App extends Component {
     super(props);
     this.handleChange = this.handleChange.bind(this);
     this.state = { ...INIT_STATE }
-  }
-
-  componentDidMount(){
-
   }
 
   handleChange(propertyName, value) {
