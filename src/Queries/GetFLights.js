@@ -1,9 +1,16 @@
 import gql from 'graphql-tag';
 
 const GET_FLIGHTS = gql`
-query GET_FLIGHTS( $from: String, $to: String, $date: Date ){
-  allFlights(search:{from: {location: $from}, to: {location: $to}, date: {exact: $date}}){
+query GET_FLIGHTS( $from: String, $to: String, $date: Date , $cursor: String){
+  allFlights(search:{from: {location: $from}, to: {location: $to}, date: {exact: $date}}, first: 10, after: $cursor){
+    pageInfo{
+      hasNextPage,
+      hasPreviousPage,
+      startCursor,
+      endCursor
+    }
     edges {
+      cursor,
       node {
         id,
         airlines {

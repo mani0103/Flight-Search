@@ -38,17 +38,46 @@ class App extends Component {
   render() {
     const isInputValid = this.validateInput();
     const MyComponentWithData = isInputValid && (
-      graphql(GET_FLIGHTS, {
-        options: 
-          { 
-            variables: 
-              {
-                from: this.state.from,
-                to: this.state.to,
-                date: this.state.date,
-              } 
-          }
-      })(FlightsTable)
+      graphql(GET_FLIGHTS, 
+        {
+          options: 
+            { 
+              variables: 
+                {
+                  from: this.state.from,
+                  to: this.state.to,
+                  date: this.state.date,
+                } 
+            },
+            props({data : { loading, error, allFlights, fetchMore, cursor }}){
+              return {
+                
+                loading,
+                error,
+                allFlights,
+                nextPage: () => {
+                  console.log(cursor)
+                  return fetchMore({
+                    variables: {
+                      from: "PRG",
+                      to: "BCN",
+                      date: "2018-03-16"
+                    },
+                    updateQuery: (previousResult, { fetchMoreResult, queryVariables }) => {
+                      //console.log(previousResult)
+                      //console.log(fetchMoreResult.allFlights)
+                      const newCursor = fetchMoreResult.allFlights.edges.cursor;
+                      return {
+                        ...fetchMoreResult
+
+                      }
+                    }
+                  })
+                }
+              }
+            }
+        }
+      )(FlightsTable)
     )
     return (
       <div className='main-container'>
