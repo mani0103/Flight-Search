@@ -52,7 +52,7 @@ class App extends Component {
     )
     return (
       <div className='main-container'>
-        <SearchInput handleChange={this.handleChange} search={this.state} />
+        <SearchInput handleChange={this.handleChange} search={this.state} client={this.props.client}/>
         {isInputValid && <MyComponentWithData />}
       </div>
     );

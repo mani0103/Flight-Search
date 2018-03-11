@@ -21,85 +21,69 @@ class SearchInput extends Component {
 
         return(
             <form>
-                <FieldGroupWithData
+                <FieldGroup
                     id="formControlsSrc"
                     type="text"
                     label="From:"
                     placeholder="Enter an airport or city"
-                    onChange={(e) => this.props.handleChange('from', e)}
+                    statename="from"
                     value={this.props.search.from}
+                    suggestions={true}
+                    {...this.props}
                 />
-                <FieldGroupWithData
+                <FieldGroup
                     id="formControlsDst"
                     placeholder="Enter an airport or city"
                     label="To:"
                     type="text"
-                    onChange={(e) => this.props.handleChange('to', e)}
+                    statename="to"
                     value={this.props.search.to}
+                    suggestions={true}
+                    {...this.props}
                 />
-                <FieldGroupWithData
+                <FieldGroup
                     id="formControlsDate"
                     placeholder="YYYY-MM-DD"
                     label="Date:"
                     type="text"
-                    onChange={(e) => this.props.handleChange('date', e)}
+                    statename="date"
                     value={this.props.search.date}
+                    suggestions={false}
+                    {...this.props}
                 />              
             </form>
         )
     }
 }
 
-class FieldGroupWithData extends Component{
-
-    constructor(props){
-        super(props);
-    }
-    
-    shouldComponentUpdate(nextProps, nextState){
-        return false;
-    }
-     
-    render() {
-        const InputFrom = 
-            graphql(GET_LOCATIONS,{options:{variables:{search: this.props.value}}})( ({data}) => {
-                const options = data.loading || data.error ? 
-                    []:
-                    Array.from(new Set(data.allLocations.edges.map(
-                        edge =>  edge.node.name    
-                    )))
-                //console.log(options)
-                return (
-                    <FieldGroup options={options} {...this.props} data={data}/>
-                )
-            });
-        return (
-            <InputFrom/>
-        );
-    }
-}
 
 class FieldGroup extends Component {
     constructor(props){
         super(props);
-        this.onLocationSearch = this.onLocationSearch.bind(this)   
+        this.onLocationSearch = this.onLocationSearch.bind(this)
+        this.state = {
+            suggestions: ['No Suggestions']
+        }   
     }
     
     onLocationSearch(search, page, prev){
-        console.log(search)
-        this.props.data.refetch({search: search});
+        this.props.client.query({
+           query:  GET_LOCATIONS,
+           variables: {search: search}
+        })
+        .then(({data}) => {
+            const options = data.loading || data.error ? 
+                    []:
+                    Array.from(new Set(data.allLocations.edges.map(
+                        edge =>  edge.node.name    
+                    )));
+            this.setState({suggestions: options});
+            this.props.handleChange(this.props.statename, search);
+        })
+        .catch(error => console.error(error));
+        
     }
 
-    moveCaretAtEnd(el) {
-        if (typeof el.selectionStart == "number") {
-            el.selectionStart = el.selectionEnd = el.value.length;
-        } else if (typeof el.createTextRange != "undefined") {
-            el.focus();
-            var range = el.createTextRange();
-            range.collapse(false);
-            range.select();
-        }
-    }
             
 
     render(){
@@ -107,15 +91,18 @@ class FieldGroup extends Component {
         return(
             <FormGroup controlId={this.props.id}>
                 <ControlLabel>{this.props.label}</ControlLabel>
-                <Autosuggest    
-                    datalist={this.props.options}
+                {!this.props.suggestions && <Autosuggest    
                     placeholder={this.props.placeholder}
-                    {...this.props}
+                    value={this.props.value}
+                    onChange={(val) => this.props.handleChange(this.props.statename, val)}
+                />}
+                {this.props.suggestions && <Autosuggest    
+                    datalist={this.state.suggestions}
+                    placeholder={this.props.placeholder}
                     onSearch={this.onLocationSearch}
-                    autoFocus
-                    datalistPartial
-                    onFocus={this.moveCaretAtEnd}
-                />
+                    value={this.props.value}
+                    onChange={(val) => this.props.handleChange(this.props.statename, val)}
+                />}
             </FormGroup>
         )
     }
