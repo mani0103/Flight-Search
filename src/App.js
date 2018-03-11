@@ -44,7 +44,7 @@ class App extends Component {
                   date: this.state.date,
                 } 
             },
-            props: ({ data: { loading, error, allFlights, fetchMore, variables, prevCursor } }) => {
+            props: ({ data: { loading, error, allFlights, fetchMore, variables } }) => {
               //console.log(cursor)
               return {                
                 loading: loading,
