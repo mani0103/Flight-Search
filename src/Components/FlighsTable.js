@@ -28,9 +28,9 @@ class FlightsTable extends Component {
               this.props.allFlights.edges.map((edge, index) => 
               <tr key={index}>
                 <td key="airlines">{edge.node.airlines.map(a => a.name).join(', ')}</td>
-                <td key="departure-time">{edge.node.departure.time}</td>
+                <td key="departure-time">{edge.node.departure.localTime}</td>
                 <td key="departure-location">{edge.node.departure.airport.city.name}: {edge.node.departure.airport.name}</td>
-                <td key="arrival-time">{edge.node.arrival.time}</td>
+                <td key="arrival-time">{edge.node.arrival.localTime}</td>
                 <td key="arrival-location">{edge.node.arrival.airport.city.name}: {edge.node.arrival.airport.name}</td>
                 <td key="price">{edge.node.price.amount}</td>
                 <td key="currency">{edge.node.price.currency}</td>
@@ -41,8 +41,7 @@ class FlightsTable extends Component {
             </tbody>
           </Table>
           <Pager>
-            <Pager.Item disabled={!this.props.allFlights.pageInfo.hasPreviousPage}  >Previous</Pager.Item>{' '}
-            <Pager.Item disabled={!this.props.allFlights.pageInfo.hasNextPage} onClick={this.props.nextPage}>Next</Pager.Item>
+            <Pager.Item disabled={!this.props.allFlights.pageInfo.hasNextPage} onClick={this.props.nextPage}>Load more data...</Pager.Item>
           </Pager>
         </div>
       )

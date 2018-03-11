@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 
 import { graphql } from 'react-apollo';
@@ -49,27 +48,32 @@ class App extends Component {
                   date: this.state.date,
                 } 
             },
-            props({data : { loading, error, allFlights, fetchMore, cursor }}){
-              return {
-                
-                loading,
-                error,
-                allFlights,
+            props: ({ data: { loading, error, allFlights, fetchMore, variables, prevCursor } }) => {
+              //console.log(cursor)
+              return {                
+                loading: loading,
+                error: error,
+                allFlights: allFlights,
                 nextPage: () => {
-                  console.log(cursor)
                   return fetchMore({
                     variables: {
-                      from: "PRG",
-                      to: "BCN",
-                      date: "2018-03-16"
+                      from: variables.from,
+                      to: variables.to,
+                      date: variables.date,
+                      cursor: allFlights.pageInfo.endCursor
                     },
                     updateQuery: (previousResult, { fetchMoreResult, queryVariables }) => {
                       //console.log(previousResult)
                       //console.log(fetchMoreResult.allFlights)
-                      const newCursor = fetchMoreResult.allFlights.edges.cursor;
+                      //const prevCursor = previousResult.allFlights.pageInfo.startCursor;
+                      //console.log(prevCursor)
                       return {
-                        ...fetchMoreResult
-
+                        ...previousResult,
+                        allFlights: {
+                          ...fetchMoreResult.allFlights,
+                          pageInfo: fetchMoreResult.allFlights.pageInfo,
+                          edges: [...previousResult.allFlights.edges, ...fetchMoreResult.allFlights.edges]
+                        }
                       }
                     }
                   })

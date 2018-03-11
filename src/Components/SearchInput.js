@@ -1,17 +1,11 @@
 import React, { Component } from 'react';
-import { FormGroup, ControlLabel, FormControl, MenuItem  } from 'react-bootstrap';
-import { Typeahead } from 'react-bootstrap-typeahead';
+import { FormGroup, ControlLabel } from 'react-bootstrap';
 import Autosuggest from 'react-bootstrap-autosuggest'
-import { graphql } from 'react-apollo';
 import GET_LOCATIONS from '../Queries/GetLLocations'
 
 
 
 class SearchInput extends Component {
-
-    constructor(props){
-        super(props);
-    }
     
     shouldComponentUpdate(nextProps, nextState){
         return false;
